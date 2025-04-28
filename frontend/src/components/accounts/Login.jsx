@@ -130,9 +130,10 @@ function Login() {
         console.log('Login Data:', login);
         const response = await API.userLogin(login);
         if (response.isSuccess) {
-            setLogin(setLoginInitial);
             setError('');
-            // Redirect or set session
+            sessionStorage.setItem('accessToken', `Bearer ${request.data.accessToken}`)
+            sessionStorage.setItem('refreshToken', `Bearer ${request.data.refreshToken}`)
+
         } else {
             setError('Invalid username or password');
         }
