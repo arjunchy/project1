@@ -17,8 +17,8 @@ app.use('/',route);
 app.use(bodyParser.json({extended:true}));
 app.use(bodyParser.urlencoded({extended: true}));
 
-const username = "";
-const password = "";
+const username = process.env.USERNAME;
+const password = process.env.PASSWORD;
 const URL =  process.env.MONGO_URL ||`mongodb+srv://${username}:${password}@cluster0.nmfl72f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 connectDB(URL);
 

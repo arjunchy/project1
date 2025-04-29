@@ -39,7 +39,7 @@ export const loginUser = async (request, response) => {
             const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET )
             const newToken = new Token ({token : refreshToken})
             await newToken.save();
-            return response.status(200).json({accessToken: accessToken, refreshToken : refreshToken, user: user.username, name: user.name})
+            return response.status(200).json({accessToken: accessToken, refreshToken : refreshToken, username: user.username, name: user.name})
         }
         else{
             return response.status(400).json({ msg : 'something went wrong'})

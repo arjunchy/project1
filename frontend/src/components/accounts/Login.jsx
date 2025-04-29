@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, TextField, Button, Typography, styled, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import { API } from '../../service/api';
+import { DataContext } from '../../context/DataProvider';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -104,17 +106,21 @@ const setLoginInitial = {
     password: ''
 };
 
-function Login() {
+function Login({setIsAuthenticated}) {
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const [account, setAccount] = useState('login');
+    const [authMode, setAuthMode ] = useState('login');
     const [signup, setSignup] = useState(setSignupInitial);
     const [login, setLogin] = useState(setLoginInitial);
     const [error, setError] = useState('');
 
+    const { setAccount} = useContext(DataContext);
+
+    const navigate = useNavigate();
+
     const img = `https://cdn-icons-png.flaticon.com/512/187/187902.png`;
 
     const toggleAccount = () => {
-        setAccount(account === 'login' ? 'signup' : 'login');
+        setAuthMode(authMode === 'login' ? 'signup' : 'login');
         setError('');
     };
 
@@ -131,8 +137,11 @@ function Login() {
         const response = await API.userLogin(login);
         if (response.isSuccess) {
             setError('');
-            sessionStorage.setItem('accessToken', `Bearer ${request.data.accessToken}`)
-            sessionStorage.setItem('refreshToken', `Bearer ${request.data.refreshToken}`)
+            sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`)
+            sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`)
+            setAccount({username: response.data.username, name: response.data.name})
+            setIsAuthenticated(true)
+            navigate('/')
 
         } else {
             setError('Invalid username or password');
@@ -174,7 +183,7 @@ function Login() {
             {isMobile ? (
                 <Container style={{ width: '90%', padding: '20px', margin: 'auto', borderRadius: '15px' }}>
                     <img src={img} alt="logo" style={{ width: '80px', borderRadius: '50%', marginBottom: '10px' }} />
-                    {account === 'login' ? (
+                    {authMode === 'login' ? (
                         <>
                             <InputField label="Username" name="username" variant="outlined" onChange={onLoginValue} />
                             <InputField label="Password" name="password" type="password" variant="outlined" onChange={onLoginValue} />
@@ -204,13 +213,13 @@ function Login() {
                     </LeftSection>
 
                     <RightSection>
-                        <FormContainer animate={{ x: account === 'login' ? '-1%' : '-102%' }}>
+                        <FormContainer animate={{ x: authMode === 'login' ? '-1%' : '-102%' }}>
                             {/* Login Form */}
                             <Container>
                                 <img src={img} alt="logo" style={{ width: '80px', borderRadius: '50%', marginBottom: '10px' }} />
                                 <InputField label="Username" name="username" variant="outlined" onChange={(e) => onLoginValue(e)} />
                                 <InputField label="Password" name="password" type="password" variant="outlined" onChange={(e) => onLoginValue(e)} />
-                                {account === 'login' && error && <Typography style={{ color: 'red', marginBottom: '10px' }}>{error}</Typography>}
+                                {authMode === 'login' && error && <Typography style={{ color: 'red', marginBottom: '10px' }}>{error}</Typography>}
                                 <ButtonStyled onClick={handleLogin}>Login</ButtonStyled>
                                 <Typography variant="body2" style={{ color: 'white', marginTop: '25px' }}>OR</Typography>
                                 <ToggleButton onClick={toggleAccount}>Create an account</ToggleButton>
@@ -222,7 +231,7 @@ function Login() {
                                 <InputField label="Name" name="name" variant="outlined" onChange={(e) => onInputChange(e)} />
                                 <InputField label="Username" name="username" variant="outlined" onChange={(e) => onInputChange(e)} />
                                 <InputField label="Password" name="password" type="password" variant="outlined" onChange={(e) => onInputChange(e)} />
-                                {account === 'signup' && error && <Typography style={{ color: 'red', marginBottom: '10px' }}>{error}</Typography>}
+                                {authMode === 'signup' && error && <Typography style={{ color: 'red', marginBottom: '10px' }}>{error}</Typography>}
                                 <ButtonStyled onClick={handleSignup}>Sign up</ButtonStyled>
                                 <Typography variant="body2" style={{ color: 'white', marginTop: '25px' }}>OR</Typography>
                                 <ToggleButton onClick={toggleAccount}>Already have an account?</ToggleButton>

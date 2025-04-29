@@ -1,13 +1,44 @@
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/accounts/Login';
 import Navbar from './components/header/Navbar';
+import DataProvider from './context/DataProvider';
+import Home from './components/Pages/Home';
+import { useState, useEffect } from 'react';
+
+const PrivateRoute = ({ isAuthenticated, setIsAuthenticated }) => {
+  return isAuthenticated ? (
+    <>
+      <Navbar setIsAuthenticated={setIsAuthenticated} />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate replace to='/login' />
+  );
+};
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const storedAuthStatus = localStorage.getItem('isAuthenticated');
+    return storedAuthStatus === 'true'; 
+  });
+
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated);
+  }, [isAuthenticated]);
+
   return (
-    <>
-      <Navbar/>
-      <Login />
-    </>
+    <DataProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          
+          <Route path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </DataProvider>
   );
 }
 
