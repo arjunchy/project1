@@ -24,5 +24,6 @@ export const API_NOTIFICATION = {
 
 export const SERVICE_URL = {
     userSignup : { url: '/signup', method: 'POST'},
-    userLogin : { url: '/login', method: 'POST'}
+    userLogin : { url: '/login', method: 'POST'},
+    createCollection : { url: '/createCollection', method: 'POST'},
 }

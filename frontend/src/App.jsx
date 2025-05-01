@@ -1,15 +1,18 @@
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
 import './App.css';
 import Login from './components/accounts/Login';
 import Navbar from './components/header/Navbar';
 import DataProvider from './context/DataProvider';
 import Home from './components/Pages/Home';
-import { useState, useEffect } from 'react';
+import CollectionView from './components/pages/CollectionView'
+import CreateCollection from './components/pages/collections/CreateCollection';
 
 const PrivateRoute = ({ isAuthenticated, setIsAuthenticated }) => {
   return isAuthenticated ? (
     <>
-      <Navbar setIsAuthenticated={setIsAuthenticated} />
+    <Navbar setIsAuthenticated={setIsAuthenticated} />
       <Outlet />
     </>
   ) : (
@@ -36,6 +39,13 @@ function App() {
           <Route path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
             <Route path="/" element={<Home />} />
           </Route>
+
+          <Route path="/create" element={<PrivateRoute isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
+            <Route path="/create" element={<CollectionView />} />
+          </Route>
+
+          <Route path="/createcollection" element={<CreateCollection/>} />
+
         </Routes>
       </BrowserRouter>
     </DataProvider>
