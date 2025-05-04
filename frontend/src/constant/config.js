@@ -26,4 +26,7 @@ export const SERVICE_URL = {
     userSignup : { url: '/signup', method: 'POST'},
     userLogin : { url: '/login', method: 'POST'},
     createCollection : { url: '/createCollection', method: 'POST'},
+    getCollection : { url: '/getCollection', method: 'GET'},
+    updateCollection : { url: '/updateCollection', method: 'PUT'},
+    deleteCollection : { url: '/deleteCollection', method: 'DELETE'},
 }

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 import { API_NOTIFICATION, SERVICE_URL } from '../constant/config.js';
+import { getAccessToken, getType } from '../utils/common-utils.js';
+
 
 const API_URL = "http://localhost:8000";
 
@@ -9,21 +11,24 @@ const axiosInstance = axios.create({
     baseURL: API_URL,
     timeout: 10000,
     headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
     }
 });
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(
-    // Success
     function (config) {
-        return config;
+      const token = getAccessToken();
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      return config;
     },
-    // Error
     function (error) {
-        return Promise.reject(error);
+      return Promise.reject(error);
     }
-);
+  );
+  
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
@@ -88,26 +93,33 @@ const processError = (error) => {
 const API = {};
 
 for (const [key, value] of Object.entries(SERVICE_URL)) {
-  API[key] = (body, showUploadProgress, showDownloadProgress) => {
-    return axiosInstance({
-      method: value.method,
-      url: value.url,
-      data: body,
-      responseType: value.responseType,
-      onUploadProgress: (progressEvent) => {
-        if (showUploadProgress) {
-          let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          showUploadProgress(percent);
-        }
-      },
-      onDownloadProgress: (progressEvent) => {
-        if (showDownloadProgress) {
-          let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          showDownloadProgress(percent);
-        }
-      },
-    });
-  };
-}
+    API[key] = (body, showUploadProgress, showDownloadProgress) => {
+      const config = {
+        method: value.method,
+        url: value.url,
+        ...getType(value, body), // <-- Use getType to attach query/params
+        responseType: value.responseType,
+        onUploadProgress: (progressEvent) => {
+          if (showUploadProgress) {
+            let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            showUploadProgress(percent);
+          }
+        },
+        onDownloadProgress: (progressEvent) => {
+          if (showDownloadProgress) {
+            let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            showDownloadProgress(percent);
+          }
+        },
+      };
+  
+      if (value.method !== 'GET' && value.method !== 'DELETE') {
+        config.data = body; // Only attach body for POST/PUT
+      }
+  
+      return axiosInstance(config);
+    };
+  }
+  
 
 export { API };

@@ -7,7 +7,7 @@ import Navbar from './components/header/Navbar';
 import DataProvider from './context/DataProvider';
 import Home from './components/Pages/Home';
 import CollectionView from './components/pages/CollectionView'
-import CreateCollection from './components/pages/collections/CreateCollection';
+import CreateCollection from './components/pages/CollectionView';
 
 const PrivateRoute = ({ isAuthenticated, setIsAuthenticated }) => {
   return isAuthenticated ? (
