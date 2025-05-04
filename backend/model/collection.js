@@ -1,17 +1,12 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from 'mongoose'
 
-const collectionSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required: true,
-        unique: true,
-    },
-    image:{
-        type: String,
-        required: true
-    }
-})
+const collectionSchema = mongoose.Schema({
+  filename: String,
+  public_id: String,
+  imgUrl: String,
+  collectionName: String
+}, { timestamps: true });
 
-const collection = mongoose.model("collection",collectionSchema)
 
-export default collection;
+const Collection = mongoose.model("Collection", collectionSchema);
+export default Collection;
