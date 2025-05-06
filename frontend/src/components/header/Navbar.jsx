@@ -38,7 +38,7 @@ const NavItems = styled(Stack)(({ theme }) => ({
     flexDirection: 'row',
     gap: '20px',
     marginLeft: 'auto',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
         display: 'none',
     },
 }));
@@ -150,7 +150,7 @@ const Navbar = ({ setIsAuthenticated }) => {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
 
     const toggleDarkMode = () => {

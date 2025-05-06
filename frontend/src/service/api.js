@@ -10,9 +10,9 @@ const API_URL = "http://localhost:8000";
 const axiosInstance = axios.create({
     baseURL: API_URL,
     timeout: 10000,
-    headers: {
-        "Content-Type": "multipart/form-data",
-    }
+    // headers: {
+    //     "Content-Type": "multipart/form-data",
+    // }
 });
 
 // Request Interceptor
